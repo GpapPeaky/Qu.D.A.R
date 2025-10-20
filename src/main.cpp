@@ -6,6 +6,9 @@ int main(int argc, char* argv[]){
 
     bool SDL2_Quit = false;
 
+    SDL2_Bitmap* bp = SDL2_NewBitmap("assets/gfx/prov.bmp");
+    SDL2_RecalibrateBitmapSize(bp, SDL2_WinWidth, SDL2_WinHeight);
+
     while(!SDL2_Quit){
         SDL2_HandleEvents(SDL2_Quit); /* Creates a new event to poll per call (Might need to be optimised) */
 
@@ -15,7 +18,7 @@ int main(int argc, char* argv[]){
 
         SDL_RenderClear(SDL2_Rnd);
 
-        /* Render functions */
+        SDL2_RenderBitmap(bp);
 
         SDL_RenderPresent(SDL2_Rnd);
     }

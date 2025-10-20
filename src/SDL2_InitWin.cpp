@@ -3,6 +3,9 @@
 SDL_Window* SDL2_Win;
 SDL_Renderer* SDL2_Rnd;
 
+int SDL2_WinWidth;
+int SDL2_WinHeight;
+
 int SDL2_InitWin(void){
     if(SDL_Init(SDL_INIT_EVERYTHING) == -1){
         std::fprintf(stderr, "SDL Could Not Initialise, Error: %s\n",SDL_GetError());
@@ -27,6 +30,8 @@ int SDL2_InitWin(void){
         std::fprintf(stderr, "Failed To Create Renderer: %s\n", SDL_GetError());
         return FAILURE;
     }
+
+    SDL_GetWindowSize(SDL2_Win, &SDL2_WinWidth, &SDL2_WinHeight);
 
     return SUCCESS;
 }
