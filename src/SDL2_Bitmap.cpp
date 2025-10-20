@@ -54,10 +54,11 @@ void SDL2_FreeBitmap(SDL2_Bitmap* bp){
 void SDL2_RenderBitmap(SDL2_Bitmap* bp, SDL_Rect* srcRect){
     /* Apply camera offsets */
     SDL_FRect transformedRect = bp->pos;
-    transformedRect.x += SDL2_Cam->offsetFromCamera.x;
-    transformedRect.y += SDL2_Cam->offsetFromCamera.y;
-    transformedRect.w *= SDL2_Cam->zoom;
-    transformedRect.h *= SDL2_Cam->zoom;
+    transformedRect.x = (bp->pos.x - (SDL2_Cam->offsetFromCamera.x - SDL2_WinWidth / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom;
+    transformedRect.y = (bp->pos.y - (SDL2_Cam->offsetFromCamera.y - SDL2_WinHeight / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom;
+    transformedRect.w = bp->pos.w * SDL2_Cam->zoom;
+    transformedRect.h = bp->pos.h * SDL2_Cam->zoom;
+
 
     SDL_RenderCopyF(
         SDL2_Rnd, 

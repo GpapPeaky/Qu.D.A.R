@@ -6,6 +6,23 @@ void SDL2_HandleEvents(bool& quit){
     while(SDL_PollEvent(&e)){
         if(e.type == SDL_QUIT || (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_ESCAPE || e.key.keysym.sym == SDLK_e))){
             quit = true;
+        }else if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_w){ /* Camera movement */
+            SDL2_MoveCamera(0.0F, 5.0F);
+        }else if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_s){
+            SDL2_MoveCamera(0.0F, -5.0F);
+        }else if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_a){
+            SDL2_MoveCamera(5.0F, 0.0F);
+        }else if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_d){
+            SDL2_MoveCamera(-5.0F, 0.0F);
+        }
+
+        /* Camera zoom */
+        if(e.type == SDL_MOUSEWHEEL){
+            if(e.wheel.y > 0){
+                SDL2_RecalibrateZoom(1.1F);
+            }else if(e.wheel.y < 0){
+                SDL2_RecalibrateZoom(0.9F);
+            }
         }
     }
 

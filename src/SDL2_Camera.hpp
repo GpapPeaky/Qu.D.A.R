@@ -31,4 +31,11 @@ void SDL2_FreeCamera(void);
  * @param dx X change
  * @param dy Y change
  */
-void SD2_MoveCamera(float dx, float dy);
+void SDL2_MoveCamera(float dx, float dy);
+
+/**
+ * @brief Recalibrate the camera zoom
+ * 
+ * @param factor Multiply zoom by it, smoother transition
+ */
+void SDL2_RecalibrateZoom(float factor);

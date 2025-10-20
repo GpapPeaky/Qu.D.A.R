@@ -17,9 +17,18 @@ void SDL2_FreeCamera(void){
     return;
 }
 
-void SD2_MoveCamera(float dx, float dy){
+void SDL2_MoveCamera(float dx, float dy){
     SDL2_Cam->offsetFromCamera.x -= dx;
-    SDL2_Cam->offsetFromCamera.y -= dx;
+    SDL2_Cam->offsetFromCamera.y -= dy;
+
+    return;
+}
+
+void SDL2_RecalibrateZoom(float factor){
+    SDL2_Cam->zoom *= factor;
+
+    if(SDL2_Cam->zoom < 0.1f) SDL2_Cam->zoom = 0.1f;   /* Max zoom-in */
+    if(SDL2_Cam->zoom > 10.0f) SDL2_Cam->zoom = 10.0f; /* Max zoom-out */
 
     return;
 }
