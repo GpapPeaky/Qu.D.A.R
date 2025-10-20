@@ -14,6 +14,8 @@ void SDL2_HandleEvents(bool& quit){
             SDL2_MoveCamera(5.0F, 0.0F);
         }else if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_d){
             SDL2_MoveCamera(-5.0F, 0.0F);
+        }else if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_q){
+            SDL2_QuadOutlines = !SDL2_QuadOutlines;
         }
 
         /* Camera zoom */

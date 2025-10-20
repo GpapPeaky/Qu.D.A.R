@@ -11,6 +11,7 @@ SRC = $(SRCP)main.cpp \
       $(SRCP)SDL2_Event.cpp \
       $(SRCP)SDL2_InitWin.cpp \
       $(SRCP)SDL2_Bitmap.cpp \
+      $(SRCP)SDL2_Quad.cpp \
       $(SRCP)SDL2_Camera.cpp
 
 # Object files (replace src/ with obj/ and .cpp with .o)

@@ -1,8 +1,9 @@
+#pragma once
+
 #include "../ThirdParty/SDL2/include/SDL2/SDL.h"
 #include "../ThirdParty/SDL2/include/SDL2/SDL_image.h"
-#include <iostream>
 
-#pragma once
+#include <iostream>
 
 #define SUCCESS 0
 #define FAILURE -1

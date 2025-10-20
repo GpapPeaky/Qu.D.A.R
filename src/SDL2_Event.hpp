@@ -1,8 +1,8 @@
+#pragma once
+
 #include "../ThirdParty/SDL2/include/SDL2/SDL.h"
 
-#include "SDL2_Camera.hpp"          /* Camera offset manipulation */
-
-#pragma once
+#include "SDL2_Quad.hpp"
 
 /**
  * @brief Handles main loop events

@@ -7,6 +7,9 @@ int main(int argc, char* argv[]){
     
     SDL2_Bitmap* bp = SDL2_NewBitmap("assets/gfx/prov.bmp");
     SDL2_RecalibrateBitmapSizeAspectRatioLocked(bp, SDL2_WinWidth);
+
+    SDL2_Quadtree(bp->srfc, 0, 0, bp->srfc->w, bp->srfc->h);
+    std::printf("Generated %d quads\n", SDL2_QuadCount);
         
     bool SDL2_Quit = false;
     while(!SDL2_Quit){
@@ -14,19 +17,20 @@ int main(int argc, char* argv[]){
 
         /* Updates to assets / sprites */
 
-        SDL_SetRenderDrawColor(SDL2_Rnd, 0, 0, 255, 255);
-
         SDL_RenderClear(SDL2_Rnd);
 
-        SDL2_RenderBitmap(bp);
+        // SDL2_RenderBitmap(bp);
+        SDL2_RenderQuads();
 
         SDL_RenderPresent(SDL2_Rnd);
     }
 
     SDL2_FreeCamera();
+    SDL2_FreeBitmap(bp);
 
     SDL_DestroyRenderer(SDL2_Rnd);
     SDL_DestroyWindow(SDL2_Win);
+    IMG_Quit();
     SDL_Quit();
 
     return SUCCESS;
