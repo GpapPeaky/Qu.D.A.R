@@ -78,7 +78,7 @@ void SDL2_RenderQuads(void){
         SDL2_Quad* q = &SDL2_Quads[i];
 
         // transformedRect.x = (bp->pos.x - (SDL2_Cam->offsetFromCamera.x - SDL2_WinWidth / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom;
-        // transformedRect.y = (bp->pos.y - (SDL2_Cam->offsetFromCamera.y - SDL2_WinHeight / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom;
+        // transformedRect.y = (bp->pos.y - (SDL2_Cam->offsetFromCamera.y - SDL2_WinHeight / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom
 
         SDL_FRect transformed;
         transformed.x = (q->pos.x - (SDL2_Cam->offsetFromCamera.x - SDL2_WinWidth / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom;
@@ -86,16 +86,33 @@ void SDL2_RenderQuads(void){
         transformed.w = q->pos.w * SDL2_Cam->zoom;
         transformed.h = q->pos.h * SDL2_Cam->zoom;
 
-        SDL_SetRenderDrawColor(SDL2_Rnd,
-            q->color.r,
-            q->color.g,
-            q->color.b,
-            255);
+        SDL_FRect cameraRect = {
+            (float)SDL2_Cam->cameraRect.x,
+            (float)SDL2_Cam->cameraRect.y,
+            (float)SDL2_Cam->cameraRect.w,
+            (float)SDL2_Cam->cameraRect.h
+        };
+        
+        SDL_FRect r;
+        
+        /* Render only if in camera */
+        if(SDL_IntersectFRect(&transformed, &cameraRect, &r)){
+            SDL_SetRenderDrawColor(SDL2_Rnd,
+                q->color.r,
+                q->color.g,
+                q->color.b,
+                255);
 
-        if(SDL2_QuadOutlines){
-            SDL_RenderDrawRectF(SDL2_Rnd, &transformed);
-        }else{
-            SDL_RenderFillRectF(SDL2_Rnd, &transformed);
+            if(SDL2_QuadOutlines){
+                SDL_RenderDrawRectF(SDL2_Rnd, &transformed);
+            }else{
+                SDL_RenderFillRectF(SDL2_Rnd, &transformed);
+            }
         }
+
+        /* Reset */
+        SDL_SetRenderDrawColor(SDL2_Rnd, 0, 0, 0, 0);
     }
+
+    return;
 }

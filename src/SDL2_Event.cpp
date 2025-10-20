@@ -7,13 +7,13 @@ void SDL2_HandleEvents(bool& quit){
         if(e.type == SDL_QUIT || (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_ESCAPE || e.key.keysym.sym == SDLK_e))){
             quit = true;
         }else if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_w){ /* Camera movement */
-            SDL2_MoveCamera(0.0F, 5.0F);
+            SDL2_MoveCamera(0.0F, 20.5F / SDL2_Cam->zoom);
         }else if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_s){
-            SDL2_MoveCamera(0.0F, -5.0F);
+            SDL2_MoveCamera(0.0F, -20.5F / SDL2_Cam->zoom);
         }else if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_a){
-            SDL2_MoveCamera(5.0F, 0.0F);
+            SDL2_MoveCamera(20.5F / SDL2_Cam->zoom, 0.0F);
         }else if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_d){
-            SDL2_MoveCamera(-5.0F, 0.0F);
+            SDL2_MoveCamera(-20.5F / SDL2_Cam->zoom, 0.0F);
         }else if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_q){
             SDL2_QuadOutlines = !SDL2_QuadOutlines;
         }
