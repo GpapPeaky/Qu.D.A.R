@@ -1,16 +1,16 @@
 #include "auxf/includes.aux"
 
 int main(int argc, char* argv[]){
-
     SDL2_InitWin(); /* Initialise */
 
-    bool SDL2_Quit = false;
-
+    SDL2_Cam = SDL2_NewCamera();
+    
     SDL2_Bitmap* bp = SDL2_NewBitmap("assets/gfx/prov.bmp");
     SDL2_RecalibrateBitmapSize(bp, 200, 200);
     SDL2_RecalibrateBitmapSizeAspectRatioLocked(bp, 
         SDL2_WinWidth);
-
+        
+    bool SDL2_Quit = false;
     while(!SDL2_Quit){
         SDL2_HandleEvents(SDL2_Quit); /* Creates a new event to poll per call (Might need to be optimised) */
 
@@ -24,6 +24,8 @@ int main(int argc, char* argv[]){
 
         SDL_RenderPresent(SDL2_Rnd);
     }
+
+    SDL2_FreeCamera();
 
     SDL_DestroyRenderer(SDL2_Rnd);
     SDL_DestroyWindow(SDL2_Win);

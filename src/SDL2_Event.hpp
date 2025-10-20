@@ -1,5 +1,7 @@
 #include "../ThirdParty/SDL2/include/SDL2/SDL.h"
 
+#include "SDL2_Camera.hpp"          /* Camera offset manipulation */
+
 #pragma once
 
 /**

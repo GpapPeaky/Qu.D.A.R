@@ -3,7 +3,7 @@
 #include "../ThirdParty/SDL2/include/SDL2/SDL.h"
 #include "../ThirdParty/SDL2/include/SDL2/SDL_image.h"
 
-#include "SDL2_InitWin.hpp"                     /* Renderer */
+#include "SDL2_Camera.hpp"                     /* Camera offsets */
 
 /**
  * Bitmap object
