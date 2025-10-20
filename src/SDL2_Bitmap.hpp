@@ -32,7 +32,16 @@ void SDL2_RecalibrateBitmapTexture(SDL2_Bitmap* bp);
 
 /**
  * @brief Recalibrate the bitmap texture size
- * by modifying the pos rectangle 
+ * by modifying the pos rectangle (aspect ratio locked)
+ * 
+ * @param bp Bitmap to change the size of 
+ * @param size New size
+ */
+void SDL2_RecalibrateBitmapSizeAspectRatioLocked(SDL2_Bitmap* bp, float size);
+
+/**
+ * @brief Recalibrate the bitmap texture size
+ * by modifying the pos rectangle (aspect ratio ignored)
  * 
  * @param bp Bitmap to change the size of 
  * @param w New width

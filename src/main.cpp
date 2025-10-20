@@ -7,7 +7,9 @@ int main(int argc, char* argv[]){
     bool SDL2_Quit = false;
 
     SDL2_Bitmap* bp = SDL2_NewBitmap("assets/gfx/prov.bmp");
-    SDL2_RecalibrateBitmapSize(bp, SDL2_WinWidth, SDL2_WinHeight);
+    SDL2_RecalibrateBitmapSize(bp, 200, 200);
+    SDL2_RecalibrateBitmapSizeAspectRatioLocked(bp, 
+        SDL2_WinWidth);
 
     while(!SDL2_Quit){
         SDL2_HandleEvents(SDL2_Quit); /* Creates a new event to poll per call (Might need to be optimised) */

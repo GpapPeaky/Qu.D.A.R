@@ -12,6 +12,7 @@ extern SDL_Renderer* SDL2_Rnd;
 
 extern int SDL2_WinWidth;
 extern int SDL2_WinHeight;
+extern float SDL2_WinAspectRatio;
 
 /**
  * @brief Initialises the renderer, the window, and the SDL/IMG modes required

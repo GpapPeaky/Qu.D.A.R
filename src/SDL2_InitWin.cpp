@@ -5,6 +5,7 @@ SDL_Renderer* SDL2_Rnd;
 
 int SDL2_WinWidth;
 int SDL2_WinHeight;
+float SDL2_WinAspectRatio;
 
 int SDL2_InitWin(void){
     if(SDL_Init(SDL_INIT_EVERYTHING) == -1){
@@ -32,6 +33,8 @@ int SDL2_InitWin(void){
     }
 
     SDL_GetWindowSize(SDL2_Win, &SDL2_WinWidth, &SDL2_WinHeight);
+
+    SDL2_WinAspectRatio = SDL2_WinWidth / SDL2_WinHeight;
 
     return SUCCESS;
 }

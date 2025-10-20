@@ -26,6 +26,15 @@ void SDL2_RecalibrateBitmapTexture(SDL2_Bitmap* bp){
     return;
 }
 
+void SDL2_RecalibrateBitmapSizeAspectRatioLocked(SDL2_Bitmap* bp, float size){
+    float aspectRatio = (float)bp->srfc->w / (float)bp->srfc->h; /* Parse from the unchanged surface */
+
+    bp->pos.w = size;
+    bp->pos.h = size / aspectRatio;
+
+    return;
+}
+
 void SDL2_RecalibrateBitmapSize(SDL2_Bitmap* bp, float w, float h){
     bp->pos.w = w;
     bp->pos.h = h;
