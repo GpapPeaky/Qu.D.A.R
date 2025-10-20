@@ -4,6 +4,10 @@
 
 #include "SDL2_Camera.hpp"
 
+#include <cmath>                /* std::roundf(...) */
+#include <algorithm>            /* std::sort(...) */
+#include <vector>               /* std::vector<t> */
+
 /* Minimum quad size, affects the LOD */
 #define SDL2_MIN_QUAD_SIZE 2
 
@@ -34,11 +38,12 @@ extern bool SDL2_QuadOutlines;
  * 
  * @param c1 Color 1
  * @param c2 Color 2
+ * @param tolerance Tolerance for color difference
  * 
  * @returns true if the colors are the same
  * false if not
  */
-bool SDL2_SameColor(SDL_Color c1, SDL_Color c2);
+bool SDL2_SameColor(SDL_Color c1, SDL_Color c2, int tolerance);
 
 /**
  * @brief Get the colour of the pixel 
@@ -81,3 +86,49 @@ void SDL2_Quadtree(SDL_Surface* src, int x, int y, int w, int h);
  * @brief Render created quads
  */
 void SDL2_RenderQuads(void);
+
+/**
+ * @brief Check if two quads can be merged horizontally
+ * 
+ * @param a First quad
+ * @param b Second quad
+ * 
+ * @returns true if the quads can be merged horizontally, false otherwise
+ */
+bool SDL2_CanMergeHorizontal(const SDL2_Quad &a, const SDL2_Quad &b);
+
+/**
+ * @brief Merge two horizontally adjacent quads into one
+ * 
+ * @param a First quad
+ * @param b Second quad
+ * 
+ * @returns A new SDL2_Quad representing the merged horizontal quad
+ */
+SDL2_Quad SDL2_MergeHorizontal(const SDL2_Quad &a, const SDL2_Quad &b);
+
+/**
+ * @brief Check if two quads can be merged vertically
+ * 
+ * @param a First quad
+ * @param b Second quad
+ * 
+ * @returns true if the quads can be merged vertically, false otherwise
+ */
+bool SDL2_CanMergeVertical(const SDL2_Quad &a, const SDL2_Quad &b);
+
+/**
+ * @brief Merge two vertically adjacent quads into one
+ * 
+ * @param a First quad
+ * @param b Second quad
+ * 
+ * @returns A new SDL2_Quad representing the merged vertical quad
+ */
+SDL2_Quad SDL2_MergeVertical(const SDL2_Quad &a, const SDL2_Quad &b);
+
+/**
+ * @brief Perform post-processing to merge all possible quads
+ */
+void SDL2_MergeQuads(void);
+
