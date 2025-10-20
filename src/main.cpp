@@ -6,9 +6,7 @@ int main(int argc, char* argv[]){
     SDL2_Cam = SDL2_NewCamera();
     
     SDL2_Bitmap* bp = SDL2_NewBitmap("assets/gfx/prov.bmp");
-    SDL2_RecalibrateBitmapSize(bp, 200, 200);
-    SDL2_RecalibrateBitmapSizeAspectRatioLocked(bp, 
-        SDL2_WinWidth);
+    SDL2_RecalibrateBitmapSizeAspectRatioLocked(bp, SDL2_WinWidth);
         
     bool SDL2_Quit = false;
     while(!SDL2_Quit){
