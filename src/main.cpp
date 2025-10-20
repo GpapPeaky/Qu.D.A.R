@@ -5,6 +5,7 @@ int main(int argc, char* argv[]){
 
     SDL2_Cam = SDL2_NewCamera();
     
+    /* NOTE: Image complexity will affect the output */
     SDL2_Bitmap* bp = SDL2_NewBitmap("assets/gfx/prov.bmp");
     SDL2_RecalibrateBitmapSizeAspectRatioLocked(bp, SDL2_WinWidth);
 

@@ -8,7 +8,7 @@
 #define SDL2_MIN_QUAD_SIZE 2
 
 /* Max quads to create */
-#define SDL2_MAX_QUADS 32768 * 2
+#define SDL2_MAX_QUADS 32768 * 10
 
 /**
  * Quad object, these will be used to 
