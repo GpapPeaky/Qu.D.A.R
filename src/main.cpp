@@ -8,7 +8,7 @@ int main(int argc, char* argv[]){
     /* NOTE: It is preferable the image dimensions are a power of 2 for more accurate artifacts */
     /* NOTE: Image complexity will affect the output */
     /* TODO: Add LOD reduction when zooming too far out */
-    SDL2_Bitmap* bp = SDL2_NewBitmap("assets/gfx/quads.bmp");
+    SDL2_Bitmap* bp = SDL2_NewBitmap("assets/gfx/prov.bmp");
     SDL2_RecalibrateBitmapSizeAspectRatioLocked(bp, SDL2_WinWidth);
 
     SDL2_Quadtree(bp->srfc, 0, 0, bp->srfc->w, bp->srfc->h);

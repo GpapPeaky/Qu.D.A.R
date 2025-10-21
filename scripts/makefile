@@ -1,21 +1,10 @@
 # Compiler
-CXXC = g++
+CXX = g++
 
 # Paths
 SRCP = src/
 OBJDIR = obj/
 BINDIR = bin/
-
-# Source files
-SRC = $(SRCP)main.cpp \
-      $(SRCP)SDL2_Event.cpp \
-      $(SRCP)SDL2_InitWin.cpp \
-      $(SRCP)SDL2_Bitmap.cpp \
-      $(SRCP)SDL2_Quad.cpp \
-      $(SRCP)SDL2_Camera.cpp
-
-# Object files (replace src/ with obj/ and .cpp with .o)
-OBJ = $(SRC:$(SRCP)%.cpp=$(OBJDIR)%.o)
 
 # SDL2 includes and libs
 SDL2I = -IThirdParty/SDL2/include/SDL2
@@ -23,19 +12,46 @@ SDL2L = -LThirdParty/SDL2/lib
 SDL2F = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 
 # Default target
-SDL2WIN: $(BINDIR)win
+all: $(BINDIR)win.exe
 
 # Link step
-$(BINDIR)win: $(OBJ)
+$(BINDIR)win.exe:  $(OBJDIR)main.o \
+				   $(OBJDIR)SDL2_Event.o \
+				   $(OBJDIR)SDL2_InitWin.o \
+                   $(OBJDIR)SDL2_Bitmap.o \
+				   $(OBJDIR)SDL2_Quad.o \
+				   $(OBJDIR)SDL2_Camera.o
+
 	@mkdir -p $(BINDIR)
-	$(CXXC) $(OBJ) $(SDL2L) $(SDL2F) -o $@
+	$(CXX) $^ $(SDL2L) $(SDL2F) -o $@
 
-# Compile each .cpp into .o in obj/
-$(OBJDIR)%.o: $(SRCP)%.cpp
+# Explicit compile rules for each source file
+$(OBJDIR)main.o: $(SRCP)main.cpp
 	@mkdir -p $(OBJDIR)
-	$(CXXC) -c $< -o $@ -Iinclude/SDL2 $(SDL2I)
+	$(CXX) -c $< -o $@ $(SDL2I)
 
-# Clean up
+$(OBJDIR)SDL2_Event.o: $(SRCP)SDL2_Event.cpp
+	@mkdir -p $(OBJDIR)
+	$(CXX) -c $< -o $@ $(SDL2I)
+
+$(OBJDIR)SDL2_InitWin.o: $(SRCP)SDL2_InitWin.cpp
+	@mkdir -p $(OBJDIR)
+	$(CXX) -c $< -o $@ $(SDL2I)
+
+$(OBJDIR)SDL2_Bitmap.o: $(SRCP)SDL2_Bitmap.cpp
+	@mkdir -p $(OBJDIR)
+	$(CXX) -c $< -o $@ $(SDL2I)
+
+$(OBJDIR)SDL2_Quad.o: $(SRCP)SDL2_Quad.cpp
+	@mkdir -p $(OBJDIR)
+	$(CXX) -c $< -o $@ $(SDL2I)
+
+$(OBJDIR)SDL2_Camera.o: $(SRCP)SDL2_Camera.cpp
+	@mkdir -p $(OBJDIR)
+	$(CXX) -c $< -o $@ $(SDL2I)
+
+# Utility targets
 clean:
-	rm -rf $(OBJDIR) $(BINDIR)
+	-rm -rf $(OBJDIR) $(BINDIR)
 
+.PHONY: all clean
