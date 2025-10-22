@@ -76,6 +76,8 @@ void SDL2_Quadtree(SDL_Surface* src, int x, int y, int w, int h){
 }
 
 void SDL2_RenderQuads(void){
+    int quadCount = 0;
+
     for(int i = 0 ; i < SDL2_QuadCount ; i++){
         SDL2_Quad* q = &SDL2_Quads[i];
 
@@ -117,11 +119,15 @@ void SDL2_RenderQuads(void){
             }else{
                 SDL_RenderFillRectF(SDL2_Rnd, &transformed);
             }
+
+            quadCount++;
         }
 
         /* Reset */
         SDL_SetRenderDrawColor(SDL2_Rnd, 0, 0, 0, 0);
     }
+
+    printf("Quads drawn: %d\n", quadCount);
 
     return;
 }
@@ -155,6 +161,7 @@ void SDL2_MergeQuads(void){
         merged = false;
         std::vector<bool> mergedFlags(SDL2_QuadCount, false);
 
+        /* Horizontal */
         for(int i = 0 ; i < SDL2_QuadCount ; i++){
             if(mergedFlags[i])continue;
 
@@ -181,6 +188,7 @@ void SDL2_MergeQuads(void){
 
         mergedFlags.assign(SDL2_QuadCount, false);
 
+        /* Vertical */
         for(int i = 0 ; i < SDL2_QuadCount ; i++){
             if(mergedFlags[i])continue;
 
