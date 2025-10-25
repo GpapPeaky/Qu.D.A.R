@@ -4,10 +4,9 @@ int main(int argc, char* argv[]){
     SDL2_InitWin(); /* Initialise */
 
     SDL2_Cam = SDL2_NewCamera();
-    
+
     /* NOTE: It is preferable the image dimensions are a power of 2 for more accurate artifacts */
     /* NOTE: Image complexity will affect the output */
-    /* TODO: Add LOD reduction when zooming too far out */
     SDL2_Bitmap* bp = SDL2_NewBitmap("assets/gfx/prov.bmp");
     SDL2_RecalibrateBitmapSizeAspectRatioLocked(bp, SDL2_WinWidth);
 
@@ -15,7 +14,7 @@ int main(int argc, char* argv[]){
     SDL2_Quad* SDL2_QuadRoot = SDL2_Quadtree(bp->srfc, 0, 0, bp->srfc->w, bp->srfc->h);
 
     std::printf("Generated %d quads\n", SDL2_QuadCount);
-    // SDL2_MergeQuads(); // FIXME
+    SDL2_MergeTree(SDL2_QuadRoot);
     std::printf("Post processing created %d quads\n", SDL2_QuadCount);
 
     bool SDL2_Quit = false;

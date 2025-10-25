@@ -115,49 +115,23 @@ SDL2_Quad* SDL2_Quadtree(SDL_Surface* src, int x, int y, int w, int h);
 void SDL2_RenderQuadNode(SDL2_Quad* q);
 
 /**
- * @brief Check if two quads can be merged horizontally
+ * @brief Check if all the children of a quad
+ * have the same colour
  * 
- * @param a First quad
- * @param b Second quad
+ * @param node Node to check it's children
+ * @param outColor Color to check for
  * 
- * @returns true if the quads can be merged horizontally, false otherwise
+ * @returns true if they do, else false
  */
-bool SDL2_CanMergeHorizontal(const SDL2_Quad &a, const SDL2_Quad &b);
+bool SDL2_AllChildrenLeavesSameColor(SDL2_Quad* node, SDL_Color* outColor);
 
 /**
- * @brief Merge two horizontally adjacent quads into one
+ * @brief Bottom-up merge, children 'collapse'
+ * to the parent if possible
  * 
- * @param a First quad
- * @param b Second quad
- * 
- * @returns A new SDL2_Quad representing the merged horizontal quad
+ * @param node Node to merge the children of 
  */
-SDL2_Quad SDL2_MergeHorizontal(const SDL2_Quad &a, const SDL2_Quad &b);
-
-/**
- * @brief Check if two quads can be merged vertically
- * 
- * @param a First quad
- * @param b Second quad
- * 
- * @returns true if the quads can be merged vertically, false otherwise
- */
-bool SDL2_CanMergeVertical(const SDL2_Quad &a, const SDL2_Quad &b);
-
-/**
- * @brief Merge two vertically adjacent quads into one
- * 
- * @param a First quad
- * @param b Second quad
- * 
- * @returns A new SDL2_Quad representing the merged vertical quad
- */
-SDL2_Quad SDL2_MergeVertical(const SDL2_Quad &a, const SDL2_Quad &b);
-
-/**
- * @brief Perform post-processing to merge all possible quads
- */
-void SDL2_MergeQuads(void);
+void SDL2_MergeTree(SDL2_Quad* node);
 
 /* TODO */
 /**
@@ -165,4 +139,3 @@ void SDL2_MergeQuads(void);
  * post-processing
  */
 void SDL2_GenerateQuads(void);
-

@@ -131,88 +131,40 @@ void SDL2_RenderQuadNode(SDL2_Quad* q){
     }
 }
 
-bool SDL2_CanMergeHorizontal(const SDL2_Quad &a, const SDL2_Quad &b){
-    return a.pos.y == b.pos.y &&
-           a.pos.h == b.pos.h &&
-           a.pos.x + a.pos.w == b.pos.x &&
-           SDL2_SameColor(a.color, b.color, 0);
+bool SDL2_AllChildrenLeavesSameColor(SDL2_Quad* node, SDL_Color* outColor){
+    if (!node) return false;
+    SDL2_Quad* a = node->children[0];
+    SDL2_Quad* b = node->children[1];
+    SDL2_Quad* c = node->children[2];
+    SDL2_Quad* d = node->children[3];
+
+    if(!a || !b || !c || !d) return false;
+    if(!a->isLeaf || !b->isLeaf || !c->isLeaf || !d->isLeaf) return false;
+
+    if(SDL2_SameColor(a->color, b->color, 0) &&
+        SDL2_SameColor(a->color, c->color, 0) &&
+        SDL2_SameColor(a->color, d->color, 0)){
+            *outColor = a->color;
+            return true;
+    }
+
+    return false;
 }
 
-SDL2_Quad SDL2_MergeHorizontal(const SDL2_Quad &a, const SDL2_Quad &b){
-    return { a.pos.x, a.pos.y, a.pos.w + b.pos.w, a.pos.h, a.color };
-}
+void SDL2_MergeTree(SDL2_Quad* node){
+    if(!node) return;
 
-bool SDL2_CanMergeVertical(const SDL2_Quad &a, const SDL2_Quad &b){
-    return a.pos.x == b.pos.x &&
-           a.pos.w == b.pos.w &&
-           a.pos.y + a.pos.h == b.pos.y &&
-           SDL2_SameColor(a.color, b.color, 0);
-}
+    for(int i = 0; i < 4; ++i){
+        if(node->children[i]) SDL2_MergeTree(node->children[i]);
+    }
 
-SDL2_Quad SDL2_MergeVertical(const SDL2_Quad &a, const SDL2_Quad &b){
-    return { a.pos.x, a.pos.y, a.pos.w, a.pos.h + b.pos.h, a.color };
-}
+    if(node->isLeaf) return;
 
-void SDL2_MergeQuads(void){
-    bool merged;
-
-    do{
-        merged = false;
-        std::vector<bool> mergedFlags(SDL2_QuadCount, false);
-
-        /* Horizontal */
-        for(int i = 0 ; i < SDL2_QuadCount ; i++){
-            if(mergedFlags[i])continue;
-
-            for(int j = i + 1 ; j < SDL2_QuadCount ; j++){
-                if(mergedFlags[j]) continue;
-
-                if(SDL2_CanMergeHorizontal(SDL2_Quads[i], SDL2_Quads[j])){
-                    SDL2_Quads[i] = SDL2_MergeHorizontal(SDL2_Quads[i], SDL2_Quads[j]);
-                    mergedFlags[j] = true;
-                    merged = true;
-                }
-            }
-        }
-
-        int writeIndex = 0;
-        for(int i = 0 ; i < SDL2_QuadCount ; i++){
-            if(!mergedFlags[i]){
-                if(writeIndex != i)
-                    SDL2_Quads[writeIndex] = SDL2_Quads[i];
-                writeIndex++;
-            }
-        }
-        SDL2_QuadCount = writeIndex;
-
-        mergedFlags.assign(SDL2_QuadCount, false);
-
-        /* Vertical */
-        for(int i = 0 ; i < SDL2_QuadCount ; i++){
-            if(mergedFlags[i])continue;
-
-            for(int j = i + 1 ; j < SDL2_QuadCount ; j++){
-                if(mergedFlags[j])continue;
-
-                if(SDL2_CanMergeVertical(SDL2_Quads[i], SDL2_Quads[j])){
-                    SDL2_Quads[i] = SDL2_MergeVertical(SDL2_Quads[i], SDL2_Quads[j]);
-                    mergedFlags[j] = true;
-                    merged = true;
-                }
-            }
-        }
-
-        writeIndex = 0;
-        for(int i = 0 ; i < SDL2_QuadCount ; i++){
-            if(!mergedFlags[i]){
-                if(writeIndex != i)
-                    SDL2_Quads[writeIndex] = SDL2_Quads[i];
-                writeIndex++;
-            }
-        }
-        SDL2_QuadCount = writeIndex;
-
-    }while(merged);
-
-    return;
+    SDL_Color unified;
+    if(SDL2_AllChildrenLeavesSameColor(node, &unified)){
+        node->isLeaf = true;
+        node->color  = unified;
+        node->children[0] = node->children[1] = node->children[2] = node->children[3] = nullptr;
+        SDL2_QuadCount--;
+    }
 }
