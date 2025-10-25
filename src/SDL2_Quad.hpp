@@ -20,8 +20,10 @@
  * a bitmap
  */
 typedef struct SDL2_Quad{
-    SDL_Rect pos;               /* Quad position and dimensions */
-    SDL_Color color;            /* Quad color */
+    SDL_Rect pos;                   /* Quad position and dimensions */
+    SDL_Color color;                /* Quad color */
+    bool isLeaf;                    /* If the quad is a leaf inside the tree */
+    struct SDL2_Quad* children[4]; /* A quad's children */
 }SDL2_Quad;
 
 /* Quads created */
@@ -100,13 +102,17 @@ bool SDL2_IsRegionUniform(SDL_Surface* src, int x, int y, int w, int h, SDL_Colo
  * @param y Artifact y coordinate
  * @param w Artifact width
  * @param h Artifact height
+ * 
+ * @returns The created quad
  */
-void SDL2_Quadtree(SDL_Surface* src, int x, int y, int w, int h);
+SDL2_Quad* SDL2_Quadtree(SDL_Surface* src, int x, int y, int w, int h);
 
 /**
- * @brief Render created quads
+ * @brief Render a quad node along with it's children
+ * 
+ * @param q Quad to render
  */
-void SDL2_RenderQuads(void);
+void SDL2_RenderQuadNode(SDL2_Quad* q);
 
 /**
  * @brief Check if two quads can be merged horizontally

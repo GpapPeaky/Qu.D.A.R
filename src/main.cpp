@@ -11,9 +11,11 @@ int main(int argc, char* argv[]){
     SDL2_Bitmap* bp = SDL2_NewBitmap("assets/gfx/prov.bmp");
     SDL2_RecalibrateBitmapSizeAspectRatioLocked(bp, SDL2_WinWidth);
 
-    SDL2_Quadtree(bp->srfc, 0, 0, bp->srfc->w, bp->srfc->h);
+    /* Quad root */
+    SDL2_Quad* SDL2_QuadRoot = SDL2_Quadtree(bp->srfc, 0, 0, bp->srfc->w, bp->srfc->h);
+
     std::printf("Generated %d quads\n", SDL2_QuadCount);
-    SDL2_MergeQuads();
+    // SDL2_MergeQuads(); // FIXME
     std::printf("Post processing created %d quads\n", SDL2_QuadCount);
 
     bool SDL2_Quit = false;
@@ -25,7 +27,7 @@ int main(int argc, char* argv[]){
         SDL_RenderClear(SDL2_Rnd);
 
         // SDL2_RenderBitmap(bp);
-        SDL2_RenderQuads();
+        SDL2_RenderQuadNode(SDL2_QuadRoot);
 
         SDL_RenderPresent(SDL2_Rnd);
     }

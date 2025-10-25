@@ -55,81 +55,80 @@ bool SDL2_IsRegionUniform(SDL_Surface* src, int x, int y, int w, int h, SDL_Colo
     return true;
 }
 
-void SDL2_Quadtree(SDL_Surface* src, int x, int y, int w, int h){
-    if(SDL2_QuadCount >= SDL2_MAX_QUADS) return;
+SDL2_Quad* SDL2_Quadtree(SDL_Surface* src, int x, int y, int w, int h){
+    if(SDL2_QuadCount >= SDL2_MAX_QUADS) return nullptr;
+
+    SDL2_Quad* q = &SDL2_Quads[SDL2_QuadCount++];
+    q->pos = {x, y, w, h};
+    q->children[0] = q->children[1] = q->children[2] = q->children[3] = nullptr;
 
     SDL_Color c;
-    if(SDL2_IsRegionUniform(src, x, y, w, h, &c) || w <= SDL2_MIN_QUAD_SIZE || h <= SDL2_MIN_QUAD_SIZE){
-        SDL2_Quads[SDL2_QuadCount++] = {x, y, w, h, c};
-        return;
+    if (SDL2_IsRegionUniform(src, x, y, w, h, &c) || w <= SDL2_MIN_QUAD_SIZE || h <= SDL2_MIN_QUAD_SIZE) {
+        q->color = c;
+        q->isLeaf = true;
+        return q;
     }
 
+    q->isLeaf = false;
     int hw = w / 2;
     int hh = h / 2;
 
-    SDL2_Quadtree(src, x, y, hw, hh);
-    SDL2_Quadtree(src, x + hw, y, w - hw, hh);
-    SDL2_Quadtree(src, x, y + hh, hw, h - hh);
-    SDL2_Quadtree(src, x + hw, y + hh, w - hw, h - hh);
-    
-    return;
+    q->children[0] = SDL2_Quadtree(src, x,       y,       hw, hh);
+    q->children[1] = SDL2_Quadtree(src, x + hw,  y,       w - hw, hh);
+    q->children[2] = SDL2_Quadtree(src, x,       y + hh,  hw, h - hh);
+    q->children[3] = SDL2_Quadtree(src, x + hw,  y + hh,  w - hw, h - hh);
+
+    return q;
 }
 
-void SDL2_RenderQuads(void){
-    int quadCount = 0;
+void SDL2_RenderQuadNode(SDL2_Quad* q){
+    if(!q) return;
 
-    for(int i = 0 ; i < SDL2_QuadCount ; i++){
-        SDL2_Quad* q = &SDL2_Quads[i];
+    /* Transformed rects */
+    float tx1 = (q->pos.x - (SDL2_Cam->offsetFromCamera.x - SDL2_WinWidth / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom;
+    float ty1 = (q->pos.y - (SDL2_Cam->offsetFromCamera.y - SDL2_WinHeight / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom;
+    float tx2 = ((q->pos.x + q->pos.w) - (SDL2_Cam->offsetFromCamera.x - SDL2_WinWidth / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom;
+    float ty2 = ((q->pos.y + q->pos.h) - (SDL2_Cam->offsetFromCamera.y - SDL2_WinHeight / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom;
 
-        // transformedRect.x = (bp->pos.x - (SDL2_Cam->offsetFromCamera.x - SDL2_WinWidth / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom;
-        // transformedRect.y = (bp->pos.y - (SDL2_Cam->offsetFromCamera.y - SDL2_WinHeight / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom
+    SDL_FRect transformed = {
+        roundf(tx1),
+        roundf(ty1),
+        roundf(tx2) - roundf(tx1),
+        roundf(ty2) - roundf(ty1)
+    };
 
-        /* Remove rounding errors, eliminate aftermath black lines */
-        float tx1 = (q->pos.x - (SDL2_Cam->offsetFromCamera.x - SDL2_WinWidth / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom;
-        float ty1 = (q->pos.y - (SDL2_Cam->offsetFromCamera.y - SDL2_WinHeight / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom;
-        
-        float tx2 = ((q->pos.x + q->pos.w) - (SDL2_Cam->offsetFromCamera.x - SDL2_WinWidth / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom;
-        float ty2 = ((q->pos.y + q->pos.h) - (SDL2_Cam->offsetFromCamera.y - SDL2_WinHeight / (2.0f * SDL2_Cam->zoom))) * SDL2_Cam->zoom;
-        
-        SDL_FRect transformed;
-        transformed.x = roundf(tx1);
-        transformed.y = roundf(ty1);
-        transformed.w = roundf(tx2) - roundf(tx1);
-        transformed.h = roundf(ty2) - roundf(ty1);
+    SDL_FRect cameraRect = {
+        (float)SDL2_Cam->cameraRect.x,
+        (float)SDL2_Cam->cameraRect.y,
+        (float)SDL2_Cam->cameraRect.w,
+        (float)SDL2_Cam->cameraRect.h
+    };
 
-        SDL_FRect cameraRect = {
-            (float)SDL2_Cam->cameraRect.x,
-            (float)SDL2_Cam->cameraRect.y,
-            (float)SDL2_Cam->cameraRect.w,
-            (float)SDL2_Cam->cameraRect.h
-        };
-        
-        SDL_FRect r;
-        
-        /* Render only if in camera */
-        if(SDL_IntersectFRect(&transformed, &cameraRect, &r)){
-            SDL_SetRenderDrawColor(SDL2_Rnd,
-                q->color.r,
-                q->color.g,
-                q->color.b,
-                255);
-
-            if(SDL2_QuadOutlines){
-                SDL_RenderDrawRectF(SDL2_Rnd, &transformed);
-            }else{
-                SDL_RenderFillRectF(SDL2_Rnd, &transformed);
-            }
-
-            quadCount++;
-        }
-
-        /* Reset */
-        SDL_SetRenderDrawColor(SDL2_Rnd, 0, 0, 0, 0);
+    SDL_FRect r;
+    if(!SDL_IntersectFRect(&transformed, &cameraRect, &r)){
+        return;
     }
 
-    printf("Quads drawn: %d\n", quadCount);
+    float minScreenSize = 2.0f; /* Pixels, adjust */
 
-    return;
+    bool tooSmallToSubdivide = (transformed.w < minScreenSize || transformed.h < minScreenSize);
+
+    if(q->isLeaf || tooSmallToSubdivide){
+        SDL_SetRenderDrawColor(SDL2_Rnd, q->color.r, q->color.g, q->color.b, 255);
+
+        if(SDL2_QuadOutlines){
+            SDL_RenderDrawRectF(SDL2_Rnd, &transformed);
+        }else{
+            SDL_RenderFillRectF(SDL2_Rnd, &transformed);
+        }
+        return;
+
+    }
+
+    /* Recurse into children for higher detail */
+    for(Uint8 i = 0 ; i < 4 ; i++){
+        SDL2_RenderQuadNode(q->children[i]);
+    }
 }
 
 bool SDL2_CanMergeHorizontal(const SDL2_Quad &a, const SDL2_Quad &b){
